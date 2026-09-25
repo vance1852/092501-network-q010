@@ -4,11 +4,12 @@ import hashlib,uuid
 from .auth import Auth
 from .models import Reading,Segment,as_dict,utcnow
 from .risk import leak_probability,score_reading
+from .routes import RouteOps
 from .storage import audit,connect,rows,transaction
-class NetworkService:
+class NetworkService(RouteOps):
     def __init__(self,database=":memory:"): self.db=connect(database); self.auth=Auth(self.db)
     def bootstrap(self):
-        for uid,pwd,role in (("admin","network-admin","admin"),("operator","network-operator","operator")):
+        for uid,pwd,role in (("admin","network-admin","admin"),("operator","network-operator","operator"),("supervisor","network-supervisor","supervisor")):
             try:self.auth.create_user(uid,pwd,role)
             except Exception:pass
     def register_segment(self,token,segment):
